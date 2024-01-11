@@ -1,0 +1,55 @@
+normal partition and swap parttion
+fdisk -l
+lsblk
+add the hard disk to server
+fdisk -l
+ cd /sys/class/scsi_host
+echo "- - -" >/sys/class/scsi_host/host25/scan
+for i in {0..32}
+do
+echo "- - -" >>/sys/class/scsi_host/host$i/scan
+done
+fdisk -l
+fdisk /dev/sdb
+p
+n
+p
+1
+just enter
++2G
+p
+w
+kpartx /dev/sdb
+mkfs.ext4 /dev/sdb1
+lsblk
+mkdir /var/normal_part1
+mount /dev/sdb1 /var/normal_part1
+df -h
+
+
+swap partition
+free  
+swap -s  =======current swap size
+fdisk /dev/sdb
+p
+n
+p
+2
+enter
++2G
+p
+m
+t
+2
+L
+82
+p
+w
+mkswap /dev/sdb2
+swapon -v /dev/sdb2
+swapon -s === now new swap is added to hard disk
+free 
+swapon -s
+swapoff /dev/sdb2
+swapon -s
+free
