@@ -1,0 +1,58 @@
+logical volume========== creation 
+a physical volume 
+ fdisk /dev/sdb
+ n
+ p
+ 3
+ enter
+ +2G
+ p
+ p
+ w
+ kpartx /dev/sdb
+ pvcreate /dev/sdb3
+ pvs
+ pvdisplay /dev/sdb3
+ pvs /dev/sdb3
+ 
+ b. create volume group 
+ 
+ vgcreate <vgname><physicalvolume>==== format
+ vgcreate vgjan1 /dev/sdb3
+ vgs vgjan1
+ 
+ c. logical volume
+ lvcreate -L 1G -n lvjan1 vgjan1
+ lvs lvjan1
+ lvdisplay
+ lvs
+ mkfs.ext4 /dev/vgjan1/lvjan1  ==== now we creating the logical volume
+ mkdir /var/lvjan1
+ mount /dev/vgjan1/lvjan1 /var/lvjan1
+ df -h
+ 
+ 
+ how to increase a lvm size of the partition
+ 
+ vgs vgjan1
+ lvresize -L +1G /dev/mapper/vgjan1-lvjan1
+ df -h
+ vgs
+ fdisk /dev/sdb
+ p
+ n
+ p
+ 4
+ enter
+ +2G
+ p
+ w
+ kpartx /dev/sdb
+ pvcreate /dev/sdb4
+ vgextent vgjan1 /dev/sdb4
+ vgs
+ lvresize -L +2G /dev/vgjan1/lvjan1
+ resize2fs /dev/vgjan1/lvjan1
+ e2fsck -f /dev/vgjan1/lvjan1
+ mount /dev/vgjan1/lvjan1 /var/lvjan1
+ 
